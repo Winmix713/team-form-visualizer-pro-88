@@ -4,11 +4,11 @@
 import { useState, useEffect, useCallback } from "react"
 import type { LeagueData, Match, StandingsEntry } from "@/types"
 import { calculateStandings, calculateTeamForms } from "@/utils/calculations"
-import { useToast } from "@/hooks/use-toast"
 import { LeagueHeader } from "./LeagueHeader"
 import { LeagueEditForm } from "./LeagueEditForm"
 import { LeagueTabs } from "./LeagueTabs"
 import { parseCSV } from "./csvParser"
+import { toast } from "@/components/ui/sonner"
 
 interface LeagueDetailsProps {
   league: LeagueData
@@ -19,7 +19,6 @@ interface LeagueDetailsProps {
 }
 
 export function LeagueDetails({ league, matches, onBack, onUpdateLeague, onUpdateMatches }: LeagueDetailsProps) {
-  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState<string>("matches")
   const [standings, setStandings] = useState<StandingsEntry[]>([])
   const [isEditing, setIsEditing] = useState(false)
@@ -52,7 +51,7 @@ export function LeagueDetails({ league, matches, onBack, onUpdateLeague, onUpdat
       title: "Changes saved",
       description: "Your league data has been updated successfully.",
     })
-  }, [editedLeague, onUpdateLeague, hasChanges, parsedMatches, matches, onUpdateMatches, toast])
+  }, [editedLeague, onUpdateLeague, hasChanges, parsedMatches, matches, onUpdateMatches])
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]

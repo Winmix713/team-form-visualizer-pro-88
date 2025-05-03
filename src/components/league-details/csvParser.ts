@@ -1,7 +1,7 @@
 
 import Papa from "papaparse"
 import type { Match } from "@/types"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "@/components/ui/sonner"
 
 export function parseCSV(
   file: File, 
