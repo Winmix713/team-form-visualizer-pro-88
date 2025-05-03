@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { FormTable } from "@/components/FormTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,8 +10,8 @@ import { Match } from "@/types";
 import RecentMatches from "@/components/RecentMatches";
 
 const Index = () => {
-  const [teamForms, setTeamForms] = useState(mockTeamForms);
-  const [matches, setMatches] = useState<Match[]>(mockMatches);
+  const [teamForms] = useState(mockTeamForms);
+  const [matches] = useState<Match[]>(mockMatches);
   
   return (
     <div className="min-h-screen bg-[#101820] text-white">
