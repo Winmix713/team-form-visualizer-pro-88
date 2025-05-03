@@ -1,5 +1,4 @@
-
-import type { Match, StandingsEntry, TeamForm } from "../types";
+import type { Match, StandingsEntry, TeamForm } from "@/types";
 
 /**
  * Calculates the standings table based on match results
