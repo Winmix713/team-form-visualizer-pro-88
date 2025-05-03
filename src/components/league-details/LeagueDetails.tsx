@@ -8,7 +8,7 @@ import { LeagueHeader } from "./LeagueHeader"
 import { LeagueEditForm } from "./LeagueEditForm"
 import { LeagueTabs } from "./LeagueTabs"
 import { parseCSV } from "./csvParser"
-import { toast } from "@/components/ui/sonner"
+import { toast } from "sonner"
 
 interface LeagueDetailsProps {
   league: LeagueData
@@ -47,9 +47,7 @@ export function LeagueDetails({ league, matches, onBack, onUpdateLeague, onUpdat
     }
     setIsEditing(false)
     setHasChanges(false)
-    toast("Changes saved", {
-      description: "Your league data has been updated successfully."
-    })
+    toast.success("Your league data has been updated successfully.");
   }, [editedLeague, onUpdateLeague, hasChanges, parsedMatches, matches, onUpdateMatches])
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

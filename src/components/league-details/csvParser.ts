@@ -1,6 +1,7 @@
+
 import Papa from "papaparse"
 import type { Match } from "@/types"
-import { toast } from "@/components/ui/sonner"
+import { toast } from "sonner"
 
 export function parseCSV(
   file: File, 
@@ -42,11 +43,24 @@ export function parseCSV(
               return isValid;
             })
             .map((row: any) => {
+              // Handle Hungarian team names mapping
+              const normalizeTeamName = (teamName: string) => {
+                // Map of Hungarian team names to English names
+                const teamNameMap: Record<string, string> = {
+                  "Vörös Ördögök": "Manchester United",
+                  "Manchester Kék": "Manchester City",
+                  "London Ágyúk": "Arsenal",
+                  "Aston Oroszlán": "Aston Villa"
+                };
+                
+                return teamNameMap[teamName] || teamName;
+              };
+              
               // Safely convert values
               const match: Match = {
                 date: String(row.date || ''),
-                home_team: String(row.home_team || ''),
-                away_team: String(row.away_team || ''),
+                home_team: normalizeTeamName(String(row.home_team || '')),
+                away_team: normalizeTeamName(String(row.away_team || '')),
                 ht_home_score: parseInt(String(row.ht_home_score), 10) || 0,
                 ht_away_score: parseInt(String(row.ht_away_score), 10) || 0,
                 home_score: parseInt(String(row.home_score), 10) || 0,
@@ -71,35 +85,25 @@ export function parseCSV(
           console.log("Valid matches count:", validMatches.length);
 
           if (validMatches.length === 0) {
-            toast.error("CSV Error", {
-              description: "No valid match data found in the CSV file. Please check the format and try again."
-            });
+            toast.error("No valid match data found in the CSV file. Please check the format and try again.");
             console.error("No valid matches found after parsing");
             return;
           }
 
           onSuccess(validMatches);
-          toast.success("CSV Uploaded", {
-            description: `Successfully parsed ${validMatches.length} matches from CSV.`
-          });
+          toast.success("Successfully parsed " + validMatches.length + " matches from CSV.");
         } catch (error) {
           console.error("Error processing CSV data:", error);
-          toast.error("Error Processing CSV", {
-            description: "Failed to process the CSV data. Please check the format and try again."
-          });
+          toast.error("Failed to process the CSV data. Please check the format and try again.");
         }
       } else {
         console.error("Empty or invalid CSV structure:", results);
-        toast.error("Empty CSV", {
-          description: "The CSV file appears to be empty or in an incorrect format."
-        });
+        toast.error("The CSV file appears to be empty or in an incorrect format.");
       }
     },
     error: (error) => {
       console.error("PapaParse error:", error);
-      toast("CSV Parse Error", {
-        description: `Error parsing CSV: ${error.message}`
-      });
+      toast.error("Error parsing CSV: " + error.message);
     }
   });
 }
