@@ -1,4 +1,3 @@
-
 "use client"
 
 import { memo, useMemo, useState } from "react"
@@ -12,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { getHungarianTeamName } from "@/data/teamsData"
 
 interface MatchesTableProps {
   matches: Match[]
@@ -48,6 +48,10 @@ const MatchCard = memo(({ match }: { match: Match }) => {
   const homeWin = match.home_score > match.away_score
   const awayWin = match.home_score < match.away_score
   const draw = match.home_score === match.away_score
+  
+  // Convert team names to Hungarian
+  const homeTeam = getHungarianTeamName(match.home_team)
+  const awayTeam = getHungarianTeamName(match.away_team)
 
   return (
     <div className="bg-black/30 rounded-lg border border-white/5 p-4 hover:bg-black/40 transition-colors">
@@ -59,7 +63,7 @@ const MatchCard = memo(({ match }: { match: Match }) => {
       </div>
 
       <div className="flex items-center justify-between my-3">
-        <div className={`text-right flex-1 text-white ${homeWin ? "font-bold" : ""}`}>{match.home_team}</div>
+        <div className={`text-right flex-1 text-white ${homeWin ? "font-bold" : ""}`}>{homeTeam}</div>
 
         <div className="mx-4 px-4 py-2 bg-black/30 rounded-lg flex flex-col items-center">
           <div className="text-lg font-bold">
@@ -70,7 +74,7 @@ const MatchCard = memo(({ match }: { match: Match }) => {
           </div>
         </div>
 
-        <div className={`text-left flex-1 text-white ${awayWin ? "font-bold" : ""}`}>{match.away_team}</div>
+        <div className={`text-left flex-1 text-white ${awayWin ? "font-bold" : ""}`}>{awayTeam}</div>
       </div>
 
       <div className="flex justify-between items-center mt-3">
@@ -351,12 +355,12 @@ export const MatchesTable = memo(({ matches = [] }: MatchesTableProps) => {
                         <TableCell
                           className={`font-medium text-white ${match.home_score > match.away_score ? "font-bold" : ""}`}
                         >
-                          {match.home_team}
+                          {getHungarianTeamName(match.home_team)}
                         </TableCell>
                         <TableCell
                           className={`font-medium text-white ${match.home_score < match.away_score ? "font-bold" : ""}`}
                         >
-                          {match.away_team}
+                          {getHungarianTeamName(match.away_team)}
                         </TableCell>
                         <TableCell className="text-center">
                           <MatchScore homeScore={match.ht_home_score} awayScore={match.ht_away_score} isHalfTime />
@@ -423,12 +427,12 @@ export const MatchesTable = memo(({ matches = [] }: MatchesTableProps) => {
                     <TableCell
                       className={`font-medium text-white ${match.home_score > match.away_score ? "font-bold" : ""}`}
                     >
-                      {match.home_team}
+                      {getHungarianTeamName(match.home_team)}
                     </TableCell>
                     <TableCell
                       className={`font-medium text-white ${match.home_score < match.away_score ? "font-bold" : ""}`}
                     >
-                      {match.away_team}
+                      {getHungarianTeamName(match.away_team)}
                     </TableCell>
                     <TableCell className="text-center">
                       <MatchScore homeScore={match.ht_home_score} awayScore={match.ht_away_score} isHalfTime />

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Match } from "@/types";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 interface RecentMatchesProps {
   matches: Match[];
@@ -52,7 +53,7 @@ const RecentMatches = ({ matches }: RecentMatchesProps) => {
             
             <div className="flex justify-between items-center">
               <div className="flex-1 text-right">
-                <div className="font-medium text-white">{match.home_team}</div>
+                <div className="font-medium text-white">{getHungarianTeamName(match.home_team)}</div>
                 <div className="text-xs text-gray-400">Hazai</div>
               </div>
               
@@ -66,7 +67,7 @@ const RecentMatches = ({ matches }: RecentMatchesProps) => {
               </div>
               
               <div className="flex-1">
-                <div className="font-medium text-white">{match.away_team}</div>
+                <div className="font-medium text-white">{getHungarianTeamName(match.away_team)}</div>
                 <div className="text-xs text-gray-400">Vendég</div>
               </div>
             </div>

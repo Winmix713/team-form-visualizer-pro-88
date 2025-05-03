@@ -2,14 +2,7 @@
 import Papa from "papaparse"
 import type { Match } from "@/types"
 import { toast } from "sonner"
-
-// Define the team mapping for Hungarian and English names
-const TEAM_NAME_MAP: Record<string, string> = {
-  "Vörös Ördögök": "Manchester United",
-  "Manchester Kék": "Manchester City",
-  "London Ágyúk": "Arsenal",
-  "Aston Oroszlán": "Aston Villa"
-};
+import { getHungarianTeamName } from "@/data/teamsData"
 
 export function parseCSV(
   file: File, 
@@ -63,15 +56,11 @@ export function parseCSV(
               return isValid;
             })
             .map((row: any) => {
-              const normalizeTeamName = (teamName: string) => {
-                return TEAM_NAME_MAP[teamName] || teamName;
-              };
-              
               // Safely convert values - the array indices match the CSV columns
               const match: Match = {
                 date: String(row[0] || ''),
-                home_team: normalizeTeamName(String(row[1] || '')),
-                away_team: normalizeTeamName(String(row[2] || '')),
+                home_team: String(row[1] || ''),
+                away_team: String(row[2] || ''),
                 ht_home_score: parseInt(String(row[3]), 10) || 0,
                 ht_away_score: parseInt(String(row[4]), 10) || 0,
                 home_score: parseInt(String(row[5]), 10) || 0,

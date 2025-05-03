@@ -4,6 +4,7 @@ import { Medal, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StandingsEntry } from "@/types";
 import { ZonesConfig } from "@/hooks/useZones";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 interface TeamStandingsRowProps {
   entry: StandingsEntry;
@@ -12,6 +13,7 @@ interface TeamStandingsRowProps {
 
 export const TeamStandingsRow = ({ entry, zones }: TeamStandingsRowProps) => {
   const positionChange = entry.previousPosition ? entry.previousPosition - entry.position : 0;
+  const teamName = getHungarianTeamName(entry.team);
 
   return (
     <TableRow
@@ -49,7 +51,7 @@ export const TeamStandingsRow = ({ entry, zones }: TeamStandingsRowProps) => {
         </div>
       </TableCell>
       <TableCell className="px-4 py-3 font-medium text-white">
-        {entry.team}
+        {teamName}
         {entry.form && (
           <div className="mt-1 flex gap-0.5">
             {entry.form.map((result, i) => (
