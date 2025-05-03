@@ -5,6 +5,7 @@ import type { TeamForm } from "@/types";
 import { PositionIndicator } from "./PositionIndicator";
 import { FormResult } from "./FormResult";
 import { SortIcon } from "./SortIcon";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 interface TableViewProps {
   teams: TeamForm[];
@@ -88,7 +89,7 @@ export const TableView = ({ teams, requestSort, sortConfig }: TableViewProps) =>
                   prevPosition={index > 0 ? teams[index - 1].position : undefined}
                 />
               </TableCell>
-              <TableCell className="font-medium text-white">{team.team}</TableCell>
+              <TableCell className="font-medium text-white">{getHungarianTeamName(team.team)}</TableCell>
               <TableCell className="text-center text-white">{team.played}</TableCell>
               <TableCell className="text-center text-white">{team.goalsFor}</TableCell>
               <TableCell className="text-center text-white">{team.goalsAgainst}</TableCell>

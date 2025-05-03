@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy } from "lucide-react";
 import { TeamForm } from "@/types";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 interface TopPerformersCardProps {
   teams: TeamForm[];
@@ -52,6 +53,9 @@ const TopPerformersCard = ({ teams }: TopPerformersCardProps) => {
           const winCount = formArray.filter(result => result === "W").length;
           const winRate = team.played > 0 ? Math.round((winCount / team.played) * 100) : 0;
           
+          // Alkalmazzuk a magyar csapatnév konverziót
+          const teamName = getHungarianTeamName(team.team);
+          
           return (
             <div 
               key={team.team} 
@@ -62,7 +66,7 @@ const TopPerformersCard = ({ teams }: TopPerformersCardProps) => {
                   {index + 1}
                 </div>
                 <div>
-                  <div className="font-medium text-white">{team.team}</div>
+                  <div className="font-medium text-white">{teamName}</div>
                   <div className="text-xs text-gray-400">
                     Win rate: {winRate}% · {team.goalsFor} goals
                   </div>

@@ -12,16 +12,43 @@ interface RecentMatchesProps {
 const RecentMatches = ({ matches }: RecentMatchesProps) => {
   const recentMatches = useMemo(() => {
     return [...matches]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .sort((a, b) => {
+        // Védelmi mechanizmus az érvénytelen dátumok ellen
+        try {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          
+          // Ellenőrizzük, hogy érvényes dátumok-e
+          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+            return 0;
+          }
+          
+          return dateB.getTime() - dateA.getTime();
+        } catch (error) {
+          console.error("Érvénytelen dátum formátum:", error, a.date, b.date);
+          return 0;
+        }
+      })
       .slice(0, 5);
   }, [matches]);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('hu-HU', { 
-      month: 'short', 
-      day: 'numeric' 
-    }).format(date);
+    try {
+      const date = new Date(dateString);
+      
+      // Ellenőrizzük, hogy érvényes dátum-e
+      if (isNaN(date.getTime())) {
+        return dateString; // Visszaadjuk az eredeti stringet, ha nem lehet dátummá alakítani
+      }
+      
+      return new Intl.DateTimeFormat('hu-HU', { 
+        month: 'short', 
+        day: 'numeric' 
+      }).format(date);
+    } catch (error) {
+      console.error("Hiba a dátum formázásakor:", dateString, error);
+      return dateString; // Visszaadjuk az eredeti stringet hiba esetén
+    }
   };
 
   if (matches.length === 0) {

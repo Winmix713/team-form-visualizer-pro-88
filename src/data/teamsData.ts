@@ -26,33 +26,86 @@ export const TEAMS: Team[] = [
   { id: "wolves", name: "Wolverhampton", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t39.png", league: "premier-league" },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Team name mapping between English and Hungarian
+// Kibővített név leképezés az angol és magyar nevek között
 export const TEAM_NAME_MAP: Record<string, string> = {
+  // Angol -> Magyar
   "Arsenal": "London Ágyúk",
   "Aston Villa": "Aston Oroszlán",
   "Manchester City": "Manchester Kék",
   "Manchester United": "Vörös Ördögök",
-  // Reverse mapping
+  // Magyar -> Angol
   "London Ágyúk": "Arsenal",
   "Aston Oroszlán": "Aston Villa",
   "Manchester Kék": "Manchester City",
   "Vörös Ördögök": "Manchester United"
 };
 
-// Function to get Hungarian name from English name
+// Név leképezés segédfüggvény kibővítve hibakezeléssel
 export function getHungarianTeamName(englishName: string): string {
-  return TEAM_NAME_MAP[englishName] || englishName;
+  if (!englishName) {
+    console.warn("Üres csapatnév érkezett a getHungarianTeamName függvénybe");
+    return "Ismeretlen csapat";
+  }
+  
+  // Keresés a leképezési táblában
+  const hungarianName = TEAM_NAME_MAP[englishName];
+  if (hungarianName) {
+    return hungarianName;
+  }
+  
+  // Ha nem találjuk a leképezési táblában, ellenőrizzük, hogy esetleg már magyar név-e
+  const isAlreadyHungarian = Object.values(TEAM_NAME_MAP).includes(englishName);
+  if (isAlreadyHungarian) {
+    return englishName;
+  }
+  
+  // Ha nem találunk leképezést, nézzük meg, van-e ilyen nevű csapat a TEAMS-ben
+  const teamByName = TEAMS.find(team => team.id === englishName.toLowerCase() || team.name === englishName);
+  if (teamByName) {
+    return teamByName.name;
+  }
+  
+  // Végső esetben visszaadjuk az eredeti nevet
+  return englishName;
 }
 
-// Function to get English name from Hungarian name
+// Angol név lekérése a magyar névből
 export function getEnglishTeamName(hungarianName: string): string {
-  return TEAM_NAME_MAP[hungarianName] || hungarianName;
+  if (!hungarianName) {
+    console.warn("Üres csapatnév érkezett a getEnglishTeamName függvénybe");
+    return "Unknown team";
+  }
+  
+  // Keresés a leképezési táblában
+  const englishName = TEAM_NAME_MAP[hungarianName];
+  if (englishName) {
+    return englishName;
+  }
+  
+  // Ha nem találjuk a leképezési táblában, ellenőrizzük, hogy esetleg már angol név-e
+  const isAlreadyEnglish = Object.keys(TEAM_NAME_MAP).includes(hungarianName);
+  if (isAlreadyEnglish) {
+    return hungarianName;
+  }
+  
+  // Ha nem találunk leképezést, visszaadjuk az eredeti nevet
+  return hungarianName;
 }
 
-// Function to find a team by name (works with both Hungarian and English names)
+// Csapat keresése név alapján (működik magyar és angol névvel is)
 export function findTeamByName(name: string): Team | undefined {
-  return TEAMS.find(team => 
+  if (!name) return undefined;
+  
+  // Keresés közvetlenül a csapatok között név alapján
+  let team = TEAMS.find(team => 
     team.name === name || 
     TEAM_NAME_MAP[name] === team.name
   );
+  
+  // Ha nem találtuk meg, próbáljuk meg az ID alapján
+  if (!team) {
+    team = TEAMS.find(team => team.id === name.toLowerCase());
+  }
+  
+  return team;
 }

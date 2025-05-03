@@ -56,9 +56,21 @@ export function parseCSV(
               return isValid;
             })
             .map((row: any) => {
+              // Validate date format before parsing
+              let dateStr = String(row[0] || '');
+              if (dateStr) {
+                // Próbáljuk meg dátummá alakítani, hogy ellenőrizzük az érvényességét
+                const testDate = new Date(dateStr);
+                if (isNaN(testDate.getTime())) {
+                  console.warn("Érvénytelen dátum formátum:", dateStr);
+                  // Alkalmazzunk alapértelmezett dátumot, ha nem érvényes
+                  dateStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+                }
+              }
+              
               // Safely convert values - the array indices match the CSV columns
               const match: Match = {
-                date: String(row[0] || ''),
+                date: dateStr,
                 home_team: String(row[1] || ''),
                 away_team: String(row[2] || ''),
                 ht_home_score: parseInt(String(row[3]), 10) || 0,
