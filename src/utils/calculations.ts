@@ -1,5 +1,5 @@
 
-import type { Match, StandingsEntry } from "../types";
+import type { Match, StandingsEntry, TeamForm } from "../types";
 
 /**
  * Calculates the standings table based on match results
@@ -142,5 +142,27 @@ export const calculateStandings = (matches: Match[]): StandingsEntry[] => {
   return standings.map((team, index) => ({
     ...team,
     position: index + 1,
+  }));
+};
+
+/**
+ * Calculates team forms based on match results
+ * 
+ * @param matches Array of match data
+ * @returns Array of team form data
+ */
+export const calculateTeamForms = (matches: Match[]): TeamForm[] => {
+  // First calculate standings to get position and other data
+  const standings = calculateStandings(matches);
+  
+  // Convert standings to team forms
+  return standings.map(team => ({
+    position: team.position,
+    team: team.team,
+    played: team.played,
+    goalsFor: team.goalsFor,
+    goalsAgainst: team.goalsAgainst,
+    points: team.points,
+    form: team.form
   }));
 };
