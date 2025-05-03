@@ -3,6 +3,14 @@ import Papa from "papaparse"
 import type { Match } from "@/types"
 import { toast } from "sonner"
 
+// Define the team mapping for Hungarian and English names
+const TEAM_NAME_MAP: Record<string, string> = {
+  "Vörös Ördögök": "Manchester United",
+  "Manchester Kék": "Manchester City",
+  "London Ágyúk": "Arsenal",
+  "Aston Oroszlán": "Aston Villa"
+};
+
 export function parseCSV(
   file: File, 
   onSuccess: (matches: Match[]) => void
@@ -11,31 +19,43 @@ export function parseCSV(
 
   // Enhanced PapaParse configuration to handle the specific CSV format
   Papa.parse(file, {
-    header: true,
-    skipEmptyLines: 'greedy', // Skip empty lines more aggressively
-    quoteChar: '"', // Specify quote character
-    delimiter: ',', // Ensure we're using comma as delimiter
-    dynamicTyping: false, // Keep everything as strings initially for better control
-    transformHeader: (header) => {
-      // Remove trailing comma if present
-      return header.endsWith(',') ? header.slice(0, -1) : header;
-    },
+    header: false,          // We're not using header row for this specific format
+    skipEmptyLines: true,   // Skip empty lines
+    quoteChar: '"',         // Specify quote character
+    delimiter: ',',         // Ensure we're using comma as delimiter
+    dynamicTyping: false,   // Keep everything as strings initially for better control
     complete: (results) => {
       console.log("CSV Parse Results:", results);
       
       if (results.data && Array.isArray(results.data) && results.data.length > 0) {
         try {
-          // Log the first row to debug
-          console.log("Sample row:", results.data[0]);
+          // Skip the header rows if they exist
+          let startIndex = 0;
+          if (typeof results.data[0][0] === 'string' && 
+              (results.data[0][0].trim() === '' || 
+               results.data[0][0].includes("date") || 
+               results.data[0][0].includes("home_team"))) {
+            startIndex = 1;
+            // Check if the next row is also a header
+            if (results.data.length > 1 && 
+                typeof results.data[1][0] === 'string' && 
+                (results.data[1][0].trim() === '' || 
+                 results.data[1][0].includes("date") || 
+                 results.data[1][0].includes("home_team"))) {
+              startIndex = 2;
+            }
+          }
           
           // Map and validate each row
           const parsedData = results.data
+            .slice(startIndex)
             .filter((row: any) => {
               // Basic validation to ensure we have the minimum required fields
+              // For this format, we expect at least 7 fields
               const isValid = row && 
-                typeof row === 'object' && 
-                'home_team' in row && 
-                'away_team' in row;
+                Array.isArray(row) && 
+                row.length >= 7 &&
+                row[0] && row[1] && row[2]; // At minimum need date, home_team, and away_team
                 
               if (!isValid) {
                 console.log("Filtering out invalid row:", row);
@@ -43,33 +63,24 @@ export function parseCSV(
               return isValid;
             })
             .map((row: any) => {
-              // Handle Hungarian team names mapping
               const normalizeTeamName = (teamName: string) => {
-                // Map of Hungarian team names to English names
-                const teamNameMap: Record<string, string> = {
-                  "Vörös Ördögök": "Manchester United",
-                  "Manchester Kék": "Manchester City",
-                  "London Ágyúk": "Arsenal",
-                  "Aston Oroszlán": "Aston Villa"
-                };
-                
-                return teamNameMap[teamName] || teamName;
+                return TEAM_NAME_MAP[teamName] || teamName;
               };
               
-              // Safely convert values
+              // Safely convert values - the array indices match the CSV columns
               const match: Match = {
-                date: String(row.date || ''),
-                home_team: normalizeTeamName(String(row.home_team || '')),
-                away_team: normalizeTeamName(String(row.away_team || '')),
-                ht_home_score: parseInt(String(row.ht_home_score), 10) || 0,
-                ht_away_score: parseInt(String(row.ht_away_score), 10) || 0,
-                home_score: parseInt(String(row.home_score), 10) || 0,
-                away_score: parseInt(String(row.away_score), 10) || 0,
+                date: String(row[0] || ''),
+                home_team: normalizeTeamName(String(row[1] || '')),
+                away_team: normalizeTeamName(String(row[2] || '')),
+                ht_home_score: parseInt(String(row[3]), 10) || 0,
+                ht_away_score: parseInt(String(row[4]), 10) || 0,
+                home_score: parseInt(String(row[5]), 10) || 0,
+                away_score: parseInt(String(row[6]), 10) || 0,
               };
               
-              // Add round if it exists
-              if ('round' in row && row.round) {
-                match.round = String(row.round);
+              // Add round if it exists (for future compatibility)
+              if (row[7]) {
+                match.round = String(row[7]);
               }
               
               return match;
@@ -90,8 +101,27 @@ export function parseCSV(
             return;
           }
 
+          // Group matches by day for round assignment if rounds are missing
+          if (validMatches.some(match => !match.round)) {
+            const matchesByDate = validMatches.reduce((acc: Record<string, Match[]>, match) => {
+              const dateKey = match.date.split(":")[0]; // Group by hour part of time
+              if (!acc[dateKey]) acc[dateKey] = [];
+              acc[dateKey].push(match);
+              return acc;
+            }, {});
+            
+            // Assign round numbers based on date groups if not already assigned
+            let roundCounter = 1;
+            Object.keys(matchesByDate).sort().forEach(dateKey => {
+              matchesByDate[dateKey].forEach(match => {
+                if (!match.round) match.round = String(roundCounter);
+              });
+              roundCounter++;
+            });
+          }
+
           onSuccess(validMatches);
-          toast.success("Successfully parsed " + validMatches.length + " matches from CSV.");
+          toast.success(`Successfully parsed ${validMatches.length} matches from CSV.`);
         } catch (error) {
           console.error("Error processing CSV data:", error);
           toast.error("Failed to process the CSV data. Please check the format and try again.");
@@ -103,7 +133,7 @@ export function parseCSV(
     },
     error: (error) => {
       console.error("PapaParse error:", error);
-      toast.error("Error parsing CSV: " + error.message);
+      toast.error(`Error parsing CSV: ${error.message}`);
     }
   });
 }
