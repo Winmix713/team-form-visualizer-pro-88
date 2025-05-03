@@ -14,6 +14,28 @@ const TopPerformerItem = ({ team, index }: TopPerformerItemProps) => {
   // Get the Hungarian team name
   const teamName = getHungarianTeamName(team.team);
   
+  // Create a renderForm function that works with both string and array types
+  const renderFormIndicators = () => {
+    if (!team.form) return null;
+    
+    // Handle both string and array types
+    const formItems = Array.isArray(team.form) 
+      ? team.form.slice(0, 5) 
+      : team.form.substring(0, 5).split("");
+    
+    return formItems.map((result, i) => (
+      <span
+        key={i}
+        className={cn(
+          "w-3 h-3 rounded-full",
+          result === "W" && "bg-emerald-500",
+          result === "D" && "bg-amber-500", 
+          result === "L" && "bg-red-500"
+        )}
+      />
+    ));
+  };
+  
   return (
     <Link
       to={`/teams/${team.team.toLowerCase()}`}
@@ -24,17 +46,7 @@ const TopPerformerItem = ({ team, index }: TopPerformerItemProps) => {
       <div className="flex-1">
         <div className="font-medium text-white">{teamName}</div>
         <div className="flex gap-1 mt-1.5">
-          {team.form?.slice(0, 5).map((result, i) => (
-            <span
-              key={i}
-              className={cn(
-                "w-3 h-3 rounded-full",
-                result === "W" && "bg-emerald-500",
-                result === "D" && "bg-amber-500", 
-                result === "L" && "bg-red-500"
-              )}
-            />
-          ))}
+          {renderFormIndicators()}
         </div>
       </div>
       
