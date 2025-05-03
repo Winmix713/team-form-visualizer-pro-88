@@ -1,6 +1,6 @@
 
 import { useMemo } from "react";
-import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { StandingsEntry } from "@/types";
 import { useSort } from "@/hooks/useSort";
@@ -29,7 +29,7 @@ export function StandingsTable({ standings = [], className }: StandingsTableProp
     return (
       <Card className={cn("animate-in fade-in-50 bg-black/20 border-white/5", className)}>
         <CardHeader>
-          <CardHeader.Title className="text-white">Standings</CardHeader.Title>
+          <CardTitle className="text-white">Standings</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-white opacity-70">No standings available.</p>
