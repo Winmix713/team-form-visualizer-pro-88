@@ -7,6 +7,7 @@ import type React from "react"
 import type { LeagueData } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { getHungarianTeamName } from "@/data/teamsData"
 
 interface LeagueTableProps {
   leagues: LeagueData[]
@@ -112,9 +113,9 @@ export const LeagueTable = memo(({ leagues, onLeagueAction, onSearch, onNewLeagu
               {leagues.map((league) => (
                 <TableRow key={league.id} className="border-b border-white/5 hover:bg-white/5">
                   <TableCell className="font-medium">{league.season}</TableCell>
-                  <TableCell>{league.winner || "—"}</TableCell>
-                  <TableCell>{league.secondPlace || "—"}</TableCell>
-                  <TableCell>{league.thirdPlace || "—"}</TableCell>
+                  <TableCell>{league.winner ? getHungarianTeamName(league.winner) : "—"}</TableCell>
+                  <TableCell>{league.secondPlace ? getHungarianTeamName(league.secondPlace) : "—"}</TableCell>
+                  <TableCell>{league.thirdPlace ? getHungarianTeamName(league.thirdPlace) : "—"}</TableCell>
                   <TableCell>
                     <StatusBadge status={league.status} />
                   </TableCell>
