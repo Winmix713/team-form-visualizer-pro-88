@@ -72,8 +72,7 @@ export function parseCSV(
           console.log("Valid matches count:", validMatches.length);
 
           if (validMatches.length === 0) {
-            toast({
-              title: "CSV Error",
+            toast("CSV Error", {
               description: "No valid match data found in the CSV file. Please check the format and try again.",
               variant: "destructive",
             });
@@ -82,22 +81,19 @@ export function parseCSV(
           }
 
           onSuccess(validMatches);
-          toast({
-            title: "CSV Uploaded",
+          toast("CSV Uploaded", {
             description: `Successfully parsed ${validMatches.length} matches from CSV.`,
           });
         } catch (error) {
           console.error("Error processing CSV data:", error);
-          toast({
-            title: "Error Processing CSV",
+          toast("Error Processing CSV", {
             description: "Failed to process the CSV data. Please check the format and try again.",
             variant: "destructive",
           });
         }
       } else {
         console.error("Empty or invalid CSV structure:", results);
-        toast({
-          title: "Empty CSV",
+        toast("Empty CSV", {
           description: "The CSV file appears to be empty or in an incorrect format.",
           variant: "destructive",
         });
@@ -105,8 +101,7 @@ export function parseCSV(
     },
     error: (error) => {
       console.error("PapaParse error:", error);
-      toast({
-        title: "CSV Parse Error",
+      toast("CSV Parse Error", {
         description: `Error parsing CSV: ${error.message}`,
         variant: "destructive",
       });

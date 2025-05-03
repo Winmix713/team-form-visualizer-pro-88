@@ -47,9 +47,8 @@ export function LeagueDetails({ league, matches, onBack, onUpdateLeague, onUpdat
     }
     setIsEditing(false)
     setHasChanges(false)
-    toast({
-      title: "Changes saved",
-      description: "Your league data has been updated successfully.",
+    toast("Changes saved", {
+      description: "Your league data has been updated successfully."
     })
   }, [editedLeague, onUpdateLeague, hasChanges, parsedMatches, matches, onUpdateMatches])
 
