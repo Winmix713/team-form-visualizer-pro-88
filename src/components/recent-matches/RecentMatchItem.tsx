@@ -12,6 +12,8 @@ interface RecentMatchItemProps {
 
 const RecentMatchItem = memo(({ match }: RecentMatchItemProps) => {
   const formattedDate = formatShortDate(match.date);
+  
+  // Always use Hungarian team names, even if the data source uses English names
   const homeTeamName = getHungarianTeamName(match.home_team);
   const awayTeamName = getHungarianTeamName(match.away_team);
   

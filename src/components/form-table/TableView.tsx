@@ -81,44 +81,49 @@ export const TableView = ({ teams, requestSort, sortConfig }: TableViewProps) =>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {teams.map((team, index) => (
-            <TableRow key={`${team.team}-${index}`} className="border-b border-white/5 hover:bg-white/5">
-              <TableCell>
-                <PositionIndicator
-                  position={team.position}
-                  prevPosition={index > 0 ? teams[index - 1].position : undefined}
-                />
-              </TableCell>
-              <TableCell className="font-medium text-white">{getHungarianTeamName(team.team)}</TableCell>
-              <TableCell className="text-center text-white">{team.played}</TableCell>
-              <TableCell className="text-center text-white">{team.goalsFor}</TableCell>
-              <TableCell className="text-center text-white">{team.goalsAgainst}</TableCell>
-              <TableCell className="text-center">
-                <span
-                  className={
-                    team.goalsFor - team.goalsAgainst > 0
-                      ? "text-emerald-400"
-                      : team.goalsFor - team.goalsAgainst < 0
-                      ? "text-red-400"
-                      : ""
-                  }
-                >
-                  {team.goalsFor - team.goalsAgainst > 0 && "+"}
-                  {team.goalsFor - team.goalsAgainst}
-                </span>
-              </TableCell>
-              <TableCell className="text-center font-bold">{team.points}</TableCell>
-              <TableCell>
-                <div className="flex justify-center gap-1.5">
-                  {Array.isArray(team.form)
-                    ? team.form.map((result, i) => <FormResult key={i} result={result} />)
-                    : typeof team.form === "string"
-                    ? team.form.split("").map((result, i) => <FormResult key={i} result={result} />)
-                    : null}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+          {teams.map((team, index) => {
+            // Ensure we use the Hungarian team name
+            const hungarianTeamName = getHungarianTeamName(team.team);
+            
+            return (
+              <TableRow key={`${team.team}-${index}`} className="border-b border-white/5 hover:bg-white/5">
+                <TableCell>
+                  <PositionIndicator
+                    position={team.position}
+                    prevPosition={index > 0 ? teams[index - 1].position : undefined}
+                  />
+                </TableCell>
+                <TableCell className="font-medium text-white">{hungarianTeamName}</TableCell>
+                <TableCell className="text-center text-white">{team.played}</TableCell>
+                <TableCell className="text-center text-white">{team.goalsFor}</TableCell>
+                <TableCell className="text-center text-white">{team.goalsAgainst}</TableCell>
+                <TableCell className="text-center">
+                  <span
+                    className={
+                      team.goalsFor - team.goalsAgainst > 0
+                        ? "text-emerald-400"
+                        : team.goalsFor - team.goalsAgainst < 0
+                        ? "text-red-400"
+                        : ""
+                    }
+                  >
+                    {team.goalsFor - team.goalsAgainst > 0 && "+"}
+                    {team.goalsFor - team.goalsAgainst}
+                  </span>
+                </TableCell>
+                <TableCell className="text-center font-bold">{team.points}</TableCell>
+                <TableCell>
+                  <div className="flex justify-center gap-1.5">
+                    {Array.isArray(team.form)
+                      ? team.form.map((result, i) => <FormResult key={i} result={result} />)
+                      : typeof team.form === "string"
+                      ? team.form.split("").map((result, i) => <FormResult key={i} result={result} />)
+                      : null}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
           {teams.length === 0 && (
             <TableRow>
               <TableCell colSpan={8} className="h-32 text-center text-white opacity-70">

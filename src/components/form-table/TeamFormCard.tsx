@@ -20,7 +20,7 @@ export const TeamFormCard = ({ team }: TeamFormCardProps) => {
   const drawPercentage = totalMatches > 0 ? (drawCount / totalMatches) * 100 : 0;
   const lossPercentage = totalMatches > 0 ? (lossCount / totalMatches) * 100 : 0;
   
-  // Alkalmazzuk a magyar csapatnév konverziót
+  // Ensure we use the Hungarian team name
   const teamName = getHungarianTeamName(team.team);
 
   return (

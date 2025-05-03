@@ -13,6 +13,8 @@ interface TeamStandingsRowProps {
 
 export const TeamStandingsRow = ({ entry, zones }: TeamStandingsRowProps) => {
   const positionChange = entry.previousPosition ? entry.previousPosition - entry.position : 0;
+  
+  // Always use Hungarian team names
   const teamName = getHungarianTeamName(entry.team);
 
   return (
