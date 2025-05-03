@@ -1,55 +1,49 @@
 
-import { memo } from "react";
 import { Link } from "react-router-dom";
-import { TeamForm } from "@/types";
-import { getHungarianTeamName } from "@/data/teamsData";
+import { cn } from "@/lib/utils";
+import type { TeamForm } from "@/types";
 import MedalBadge from "./MedalBadge";
+import { getHungarianTeamName } from "@/data/teamsData";
 
 interface TopPerformerItemProps {
   team: TeamForm;
   index: number;
 }
 
-const TopPerformerItem = memo(({ team, index }: TopPerformerItemProps) => {
-  const formArray = Array.isArray(team.form) ? team.form : typeof team.form === "string" ? team.form.split("") : [];
-  const winCount = formArray.filter(result => result === "W").length;
-  const winRate = team.played > 0 ? Math.round((winCount / team.played) * 100) : 0;
-  
-  // Apply the Hungarian team name conversion
+const TopPerformerItem = ({ team, index }: TopPerformerItemProps) => {
+  // Get the Hungarian team name
   const teamName = getHungarianTeamName(team.team);
   
-  const getMedalColor = (index: number) => {
-    switch (index) {
-      case 0:
-        return "bg-amber-500/20 text-amber-400 border-amber-500/30";
-      case 1:
-        return "bg-gray-400/20 text-gray-300 border-gray-400/30";
-      case 2:
-        return "bg-amber-700/20 text-amber-600 border-amber-700/30";
-      default:
-        return "bg-blue-500/20 text-blue-400 border-blue-500/30";
-    }
-  };
-
   return (
-    <Link 
+    <Link
       to={`/teams/${team.team.toLowerCase()}`}
-      className={`flex items-center justify-between p-3 rounded-lg border ${getMedalColor(index)} hover:opacity-90 transition-opacity`}
+      className="flex items-center gap-3 bg-black/30 rounded-lg p-3 border border-white/5 hover:bg-black/40 transition-colors"
     >
-      <div className="flex items-center gap-3">
-        <MedalBadge position={index} />
-        <div>
-          <div className="font-medium text-white">{teamName}</div>
-          <div className="text-xs text-gray-400">
-            Win rate: {winRate}% · {team.goalsFor} goals
-          </div>
+      <MedalBadge position={index + 1} />
+      
+      <div className="flex-1">
+        <div className="font-medium text-white">{teamName}</div>
+        <div className="flex gap-1 mt-1.5">
+          {team.form?.slice(0, 5).map((result, i) => (
+            <span
+              key={i}
+              className={cn(
+                "w-3 h-3 rounded-full",
+                result === "W" && "bg-emerald-500",
+                result === "D" && "bg-amber-500", 
+                result === "L" && "bg-red-500"
+              )}
+            />
+          ))}
         </div>
       </div>
-      <div className="text-2xl font-bold text-white">{team.points}</div>
+      
+      <div className="text-center">
+        <div className="text-lg font-bold text-white">{team.points}</div>
+        <div className="text-xs text-gray-400">Points</div>
+      </div>
     </Link>
   );
-});
-
-TopPerformerItem.displayName = "TopPerformerItem";
+};
 
 export default TopPerformerItem;
