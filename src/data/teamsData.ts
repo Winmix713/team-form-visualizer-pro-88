@@ -1,4 +1,3 @@
-
 export interface Team {
   id: string;
   name: string;
@@ -6,7 +5,7 @@ export interface Team {
   league: string;
 }
 
-// Teams data with Hungarian names
+// Teams data
 export const TEAMS: Team[] = [
   { id: "arsenal", name: "London Ágyúk", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t3.png",  league: "premier-league" },
   { id: "astonvilla", name: "Aston Oroszlán", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t7.png", league: "premier-league" },
@@ -20,13 +19,14 @@ export const TEAMS: Team[] = [
   { id: "mancity", name: "Manchester Kék", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t43.png",  league: "premier-league" },
   { id: "newcastle", name: "Newcastle", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t4.png", league: "premier-league" },
   { id: "nottingham", name: "Nottingham", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t17.png", league: "premier-league" },
-  { id: "tottenham", name: "Tottenham", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t6.png", league: "premier-league" },
+  { id: "tottenham", name: "Tottenham", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t6.png",   league: "premier-league" },
   { id: "manutd", name: "Vörös Ördögök", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t1.png",  league: "premier-league" },
   { id: "westham", name: "West Ham", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t21.png", league: "premier-league" },
   { id: "wolves", name: "Wolverhampton", logoUrl: "https://resources.premierleague.com/premierleague/badges/50/t39.png", league: "premier-league" },
+  // Add more teams from other leagues here
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Kibővített név leképezés az angol és magyar nevek között
+// Név leképezés az angol és magyar nevek között
 export const TEAM_NAME_MAP: Record<string, string> = {
   // Angol -> Magyar
   "Arsenal": "London Ágyúk",
@@ -40,7 +40,7 @@ export const TEAM_NAME_MAP: Record<string, string> = {
   "Vörös Ördögök": "Manchester United"
 };
 
-// Név leképezés segédfüggvény kibővítve hibakezeléssel
+// Név leképezés segédfüggvény hibakezeléssel
 export function getHungarianTeamName(englishName: string): string {
   if (!englishName) {
     console.warn("Üres csapatnév érkezett a getHungarianTeamName függvénybe");
