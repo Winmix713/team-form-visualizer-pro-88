@@ -4,6 +4,7 @@
 import { memo } from "react"
 import { Trophy, BarChart3, ChevronDown, Settings, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 interface HeaderProps {
   currentSeason?: string
@@ -11,7 +12,7 @@ interface HeaderProps {
 }
 
 const Logo = memo(() => (
-  <div className="flex items-center gap-3 group">
+  <Link to="/" className="flex items-center gap-3 group">
     <Trophy
       size={28}
       className="text-blue-500 transition-transform duration-300 group-hover:scale-110"
@@ -21,7 +22,7 @@ const Logo = memo(() => (
       <h1 className="text-xl md:text-2xl font-bold text-white">Soccer Championship Analysis</h1>
       <p className="text-xs text-gray-400 hidden md:block">Professional Soccer Statistics & Analysis</p>
     </div>
-  </div>
+  </Link>
 ))
 
 Logo.displayName = "Logo"
@@ -54,7 +55,12 @@ export const Header = memo(({ currentSeason = "2023-2024", className = "" }: Hea
       <nav className="container mx-auto px-4 md:px-6 py-4" role="navigation" aria-label="Main navigation">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <Logo />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Link to="/leagues">
+              <Button variant="outline" className="bg-white/5 border-white/10 text-white hover:bg-white/10">
+                League Management
+              </Button>
+            </Link>
             <SeasonIndicator season={currentSeason} />
             <Button variant="outline" size="icon" className="w-9 h-9 bg-white/5 border-white/10 hover:bg-white/10">
               <Bell className="h-4 w-4 text-gray-300" />
