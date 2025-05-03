@@ -1,10 +1,11 @@
 
 import { TeamForm, Match } from "@/types";
+import { getHungarianTeamName } from "./teamsData";
 
 export const mockTeamForms: TeamForm[] = [
   {
     position: 1,
-    team: "Manchester City",
+    team: "Manchester Kék",
     played: 38,
     goalsFor: 94,
     goalsAgainst: 33,
@@ -13,7 +14,7 @@ export const mockTeamForms: TeamForm[] = [
   },
   {
     position: 2,
-    team: "Arsenal",
+    team: "London Ágyúk",
     played: 38,
     goalsFor: 88,
     goalsAgainst: 29,
@@ -31,7 +32,7 @@ export const mockTeamForms: TeamForm[] = [
   },
   {
     position: 4,
-    team: "Aston Villa",
+    team: "Aston Oroszlán",
     played: 38,
     goalsFor: 76,
     goalsAgainst: 58,
@@ -67,7 +68,7 @@ export const mockTeamForms: TeamForm[] = [
   },
   {
     position: 8,
-    team: "Manchester United",
+    team: "Vörös Ördögök",
     played: 38,
     goalsFor: 57,
     goalsAgainst: 58,
@@ -97,7 +98,7 @@ export const mockTeamForms: TeamForm[] = [
 export const mockMatches: Match[] = [
   {
     date: "2023-08-12",
-    home_team: "Manchester City",
+    home_team: "Manchester Kék",
     away_team: "Chelsea",
     ht_home_score: 1,
     ht_away_score: 0,
@@ -107,7 +108,7 @@ export const mockMatches: Match[] = [
   },
   {
     date: "2023-08-19",
-    home_team: "Arsenal",
+    home_team: "London Ágyúk",
     away_team: "Liverpool",
     ht_home_score: 0,
     ht_away_score: 0,
@@ -118,7 +119,7 @@ export const mockMatches: Match[] = [
   {
     date: "2023-08-26",
     home_team: "Tottenham",
-    away_team: "Manchester United",
+    away_team: "Vörös Ördögök",
     ht_home_score: 1,
     ht_away_score: 0,
     home_score: 2,
@@ -148,7 +149,7 @@ export const mockMatches: Match[] = [
   {
     date: "2023-09-23",
     home_team: "Chelsea",
-    away_team: "Aston Villa",
+    away_team: "Aston Oroszlán",
     ht_home_score: 0,
     ht_away_score: 1,
     home_score: 0,
@@ -157,8 +158,8 @@ export const mockMatches: Match[] = [
   },
   {
     date: "2023-09-30",
-    home_team: "Manchester United",
-    away_team: "Manchester City",
+    home_team: "Vörös Ördögök",
+    away_team: "Manchester Kék",
     ht_home_score: 0,
     ht_away_score: 2,
     home_score: 0,
@@ -168,7 +169,7 @@ export const mockMatches: Match[] = [
   {
     date: "2023-10-07",
     home_team: "Brighton",
-    away_team: "Arsenal",
+    away_team: "London Ágyúk",
     ht_home_score: 1,
     ht_away_score: 2,
     home_score: 1,

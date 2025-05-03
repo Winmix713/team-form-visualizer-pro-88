@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect, useCallback } from "react";
@@ -21,8 +20,8 @@ interface AppState {
 
 const initialLeagues: LeagueData[] = [
   {
-    id: "premier-league",
-    name: "Premier League",
+    id: "magyar-bajnoksag",
+    name: "Magyar Bajnokság",
     season: "2023-2024",
     winner: "-",
     secondPlace: "-",
@@ -30,8 +29,8 @@ const initialLeagues: LeagueData[] = [
     status: "In Progress",
   },
   {
-    id: "la-liga",
-    name: "La Liga",
+    id: "premier-league",
+    name: "Premier League",
     season: "2023-2024",
     winner: "-",
     secondPlace: "-",

@@ -23,27 +23,27 @@ const Index = () => {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-blue-500" />
-                <CardTitle className="text-white">League Overview</CardTitle>
+                <CardTitle className="text-white">Magyar Bajnokság Áttekintés</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Total Teams</div>
+                  <div className="text-sm text-gray-400">Csapatok</div>
                   <div className="text-2xl font-bold text-white">{teamForms.length}</div>
                 </div>
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Matches Played</div>
+                  <div className="text-sm text-gray-400">Lejátszott meccsek</div>
                   <div className="text-2xl font-bold text-white">{matches.length}</div>
                 </div>
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Goals Scored</div>
+                  <div className="text-sm text-gray-400">Szerzett gólok</div>
                   <div className="text-2xl font-bold text-white">
                     {matches.reduce((sum, match) => sum + match.home_score + match.away_score, 0)}
                   </div>
                 </div>
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
-                  <div className="text-sm text-gray-400">Avg. Goals/Match</div>
+                  <div className="text-sm text-gray-400">Átlag gól/meccs</div>
                   <div className="text-2xl font-bold text-white">
                     {matches.length > 0 
                       ? (matches.reduce((sum, match) => sum + match.home_score + match.away_score, 0) / matches.length).toFixed(2) 
