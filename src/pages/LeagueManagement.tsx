@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Header } from "@/components/Header";
 import { LeagueTable } from "@/components/LeagueTable";
-import { LeagueDetails } from "@/components/LeagueDetails";
+import { LeagueDetails } from "@/components/league-details/LeagueDetails";
 import { NewLeagueModal } from "@/components/NewLeagueModal";
 import { calculateStandings } from "@/utils/calculations";
 import type { LeagueData, Match } from "@/types";

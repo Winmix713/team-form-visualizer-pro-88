@@ -1,7 +1,7 @@
 
 import Papa from "papaparse"
 import type { Match } from "@/types"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 
 export function parseCSV(
   file: File, 
@@ -22,7 +22,6 @@ export function parseCSV(
     },
     complete: (results) => {
       console.log("CSV Parse Results:", results);
-      const { toast } = useToast()
       
       if (results.data && Array.isArray(results.data) && results.data.length > 0) {
         try {
@@ -106,7 +105,6 @@ export function parseCSV(
     },
     error: (error) => {
       console.error("PapaParse error:", error);
-      const { toast } = useToast()
       toast({
         title: "CSV Parse Error",
         description: `Error parsing CSV: ${error.message}`,
