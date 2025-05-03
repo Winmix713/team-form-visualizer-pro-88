@@ -51,3 +51,35 @@ export interface LeagueData {
   thirdPlace?: string;
   status: string;
 }
+
+// New types needed for the components
+export interface TeamForm {
+  team: string;
+  teamId: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+  form: string[];
+  position?: number;
+  lastPosition?: number;
+}
+
+export interface StandingsEntry {
+  teamId: string;
+  teamName: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+  position: number;
+  zone?: string;
+}

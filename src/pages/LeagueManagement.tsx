@@ -1,238 +1,114 @@
 
-import React, { useState, useEffect } from 'react';
-import { Container, Box, CircularProgress, Tabs, Tab } from '@mui/material';
-import { fetchTeams, fetchMatches, fetchPlayers, addMatch, updateLeague } from '../api/dataService';
-import { Team, Match, Player, League } from '../types';
+import { useLeagueManagement } from '@/hooks/useLeagueManagement';
+import LoadingSpinner from '@/components/dashboard-new/LoadingSpinner';
+import LeagueManagementHeader from '@/components/league-management-new/LeagueManagementHeader';
+import LeagueTabPanel from '@/components/league-management-new/LeagueTabPanel';
+import AddMatchDialog from '@/components/league-management-new/AddMatchDialog';
+import EditLeagueDialog from '@/components/league-management-new/EditLeagueDialog';
 
-// Import refactored components
-import LeagueHeader from '../components/league-management/LeagueHeader';
+// Import existing tab components (these were listed as read-only)
 import StandingsTab from '../components/league-management/StandingsTab';
 import RecentMatchesTab from '../components/league-management/RecentMatchesTab';
 import TopScorersTab from '../components/league-management/TopScorersTab';
 import TeamPerformanceTab from '../components/league-management/TeamPerformanceTab';
-import AddMatchDialog from '../components/league-management/AddMatchDialog';
-import EditLeagueDialog from '../components/league-management/EditLeagueDialog';
-import FeaturedTeams from '../components/dashboard/FeaturedTeams';
+import FeaturedTeams from '@/components/dashboard-new/FeaturedTeams';
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
+// Import Shadcn UI components
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
-
-const LeagueManagement: React.FC = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [tabValue, setTabValue] = useState(0);
-  const [selectedLeague, setSelectedLeague] = useState('premier');
-  const [openAddMatch, setOpenAddMatch] = useState(false);
-  const [openEditLeague, setOpenEditLeague] = useState(false);
-  const [newMatch, setNewMatch] = useState<Partial<Match>>({
-    date: new Date().toISOString().split('T')[0],
-    homeTeamId: '',
-    awayTeamId: '',
-    homeScore: 0,
-    awayScore: 0,
-    venue: '',
-    leagueId: 'premier',
-  });
-  const [leagueSettings, setLeagueSettings] = useState<Partial<League>>({
-    id: 'premier',
-    name: 'Premier League',
-    season: '2023-2024',
-    startDate: '2023-08-12',
-    endDate: '2024-05-19',
-    winPoints: 3,
-    drawPoints: 1,
-    lossPoints: 0,
-  });
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const [teamsData, matchesData, playersData] = await Promise.all([
-          fetchTeams(),
-          fetchMatches(),
-          fetchPlayers(),
-        ]);
-        setTeams(teamsData);
-        setMatches(matchesData);
-        setPlayers(playersData);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  const handleAddMatchOpen = () => {
-    setOpenAddMatch(true);
-  };
-
-  const handleAddMatchClose = () => {
-    setOpenAddMatch(false);
-  };
-
-  const handleEditLeagueOpen = () => {
-    setOpenEditLeague(true);
-  };
-
-  const handleEditLeagueClose = () => {
-    setOpenEditLeague(false);
-  };
-
-  const handleMatchChange = (field: keyof Match, value: any) => {
-    setNewMatch({
-      ...newMatch,
-      [field]: value,
-    });
-  };
-
-  const handleLeagueSettingChange = (field: keyof League, value: any) => {
-    setLeagueSettings({
-      ...leagueSettings,
-      [field]: value,
-    });
-  };
-
-  const handleAddMatch = async () => {
-    try {
-      if (
-        !newMatch.homeTeamId ||
-        !newMatch.awayTeamId ||
-        newMatch.homeTeamId === newMatch.awayTeamId
-      ) {
-        alert('Please select two different teams');
-        return;
-      }
-
-      const matchData = {
-        ...newMatch,
-        id: `match_${Date.now()}`,
-        leagueId: selectedLeague,
-        homeScore: Number(newMatch.homeScore),
-        awayScore: Number(newMatch.awayScore),
-      } as Match;
-
-      await addMatch(matchData);
-      setMatches([...matches, matchData]);
-      setOpenAddMatch(false);
-      setNewMatch({
-        date: new Date().toISOString().split('T')[0],
-        homeTeamId: '',
-        awayTeamId: '',
-        homeScore: 0,
-        awayScore: 0,
-        venue: '',
-        leagueId: selectedLeague,
-      });
-    } catch (error) {
-      console.error('Error adding match:', error);
-      alert('Failed to add match');
-    }
-  };
-
-  const handleUpdateLeague = async () => {
-    try {
-      await updateLeague(leagueSettings as League);
-      setOpenEditLeague(false);
-      alert('League settings updated successfully');
-    } catch (error) {
-      console.error('Error updating league settings:', error);
-      alert('Failed to update league settings');
-    }
-  };
+const LeagueManagement = () => {
+  const {
+    teams,
+    matches,
+    players,
+    loading,
+    tabValue,
+    setTabValue,
+    selectedLeague,
+    setSelectedLeague,
+    openAddMatch,
+    openEditLeague,
+    newMatch,
+    leagueSettings,
+    handleAddMatchOpen,
+    handleAddMatchClose,
+    handleEditLeagueOpen,
+    handleEditLeagueClose,
+    handleMatchChange,
+    handleLeagueSettingChange,
+    handleAddMatch,
+    handleUpdateLeague,
+  } = useLeagueManagement();
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
-        <CircularProgress />
-      </Box>
+      <div className="container mx-auto px-4 py-16">
+        <LoadingSpinner size="lg" />
+      </div>
     );
   }
 
   return (
-    <Container maxWidth="lg">
-      <LeagueHeader
+    <div className="container mx-auto px-4 py-6">
+      <LeagueManagementHeader
         selectedLeague={selectedLeague}
         setSelectedLeague={setSelectedLeague}
         handleAddMatchOpen={handleAddMatchOpen}
         handleEditLeagueOpen={handleEditLeagueOpen}
       />
 
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabValue} onChange={handleTabChange} aria-label="league management tabs">
-          <Tab label="Standings" />
-          <Tab label="Recent Matches" />
-          <Tab label="Top Scorers" />
-          <Tab label="Team Performance" />
+      <div className="mt-8">
+        <Tabs 
+          defaultValue="standings" 
+          onValueChange={(value) => {
+            if (value === "standings") setTabValue(0);
+            else if (value === "matches") setTabValue(1);
+            else if (value === "scorers") setTabValue(2);
+            else if (value === "performance") setTabValue(3);
+          }}
+        >
+          <TabsList className="grid grid-cols-4 w-full">
+            <TabsTrigger value="standings">Standings</TabsTrigger>
+            <TabsTrigger value="matches">Recent Matches</TabsTrigger>
+            <TabsTrigger value="scorers">Top Scorers</TabsTrigger>
+            <TabsTrigger value="performance">Team Performance</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="standings">
+            <StandingsTab 
+              teams={teams} 
+              matches={matches} 
+              selectedLeague={selectedLeague} 
+            />
+          </TabsContent>
+
+          <TabsContent value="matches">
+            <RecentMatchesTab 
+              teams={teams} 
+              matches={matches} 
+              selectedLeague={selectedLeague} 
+            />
+          </TabsContent>
+
+          <TabsContent value="scorers">
+            <TopScorersTab 
+              players={players} 
+              teams={teams} 
+              selectedLeague={selectedLeague} 
+            />
+          </TabsContent>
+
+          <TabsContent value="performance">
+            <TeamPerformanceTab 
+              teams={teams} 
+              matches={matches} 
+              selectedLeague={selectedLeague} 
+            />
+          </TabsContent>
         </Tabs>
-      </Box>
+      </div>
 
-      <TabPanel value={tabValue} index={0}>
-        <StandingsTab 
-          teams={teams} 
-          matches={matches} 
-          selectedLeague={selectedLeague} 
-        />
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={1}>
-        <RecentMatchesTab 
-          teams={teams} 
-          matches={matches} 
-          selectedLeague={selectedLeague} 
-        />
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={2}>
-        <TopScorersTab 
-          players={players} 
-          teams={teams} 
-          selectedLeague={selectedLeague} 
-        />
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={3}>
-        <TeamPerformanceTab 
-          teams={teams} 
-          matches={matches} 
-          selectedLeague={selectedLeague} 
-        />
-      </TabPanel>
-
-      {/* Add Match Dialog */}
+      {/* Dialogs */}
       <AddMatchDialog
         open={openAddMatch}
         onClose={handleAddMatchClose}
@@ -243,7 +119,6 @@ const LeagueManagement: React.FC = () => {
         handleAddMatch={handleAddMatch}
       />
 
-      {/* Edit League Dialog */}
       <EditLeagueDialog
         open={openEditLeague}
         onClose={handleEditLeagueClose}
@@ -252,8 +127,10 @@ const LeagueManagement: React.FC = () => {
         handleUpdateLeague={handleUpdateLeague}
       />
 
-      <FeaturedTeams />
-    </Container>
+      <div className="mt-8">
+        <FeaturedTeams />
+      </div>
+    </div>
   );
 };
 
