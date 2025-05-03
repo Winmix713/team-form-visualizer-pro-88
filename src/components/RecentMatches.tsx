@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 import { Match } from "@/types";
-import { getHungarianTeamName } from "@/data/teamsData";
+import RecentMatchItem from "./recent-matches/RecentMatchItem";
 
 interface RecentMatchesProps {
   matches: Match[];
@@ -13,43 +13,24 @@ const RecentMatches = ({ matches }: RecentMatchesProps) => {
   const recentMatches = useMemo(() => {
     return [...matches]
       .sort((a, b) => {
-        // Védelmi mechanizmus az érvénytelen dátumok ellen
+        // Defensive mechanism against invalid dates
         try {
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
           
-          // Ellenőrizzük, hogy érvényes dátumok-e
+          // Check for valid dates
           if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
             return 0;
           }
           
           return dateB.getTime() - dateA.getTime();
         } catch (error) {
-          console.error("Érvénytelen dátum formátum:", error, a.date, b.date);
+          console.error("Invalid date format:", error, a.date, b.date);
           return 0;
         }
       })
       .slice(0, 5);
   }, [matches]);
-
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      
-      // Ellenőrizzük, hogy érvényes dátum-e
-      if (isNaN(date.getTime())) {
-        return dateString; // Visszaadjuk az eredeti stringet, ha nem lehet dátummá alakítani
-      }
-      
-      return new Intl.DateTimeFormat('hu-HU', { 
-        month: 'short', 
-        day: 'numeric' 
-      }).format(date);
-    } catch (error) {
-      console.error("Hiba a dátum formázásakor:", dateString, error);
-      return dateString; // Visszaadjuk az eredeti stringet hiba esetén
-    }
-  };
 
   if (matches.length === 0) {
     return (
@@ -72,33 +53,7 @@ const RecentMatches = ({ matches }: RecentMatchesProps) => {
 
       <CardContent className="p-4 space-y-3">
         {recentMatches.map((match, index) => (
-          <div key={index} className="bg-black/30 rounded-lg p-3 border border-white/5">
-            <div className="text-xs text-gray-400 mb-2">
-              {formatDate(match.date)}
-              {match.round && ` · Forduló ${match.round}`}
-            </div>
-            
-            <div className="flex justify-between items-center">
-              <div className="flex-1 text-right">
-                <div className="font-medium text-white">{getHungarianTeamName(match.home_team)}</div>
-                <div className="text-xs text-gray-400">Hazai</div>
-              </div>
-              
-              <div className="mx-4 text-center">
-                <div className="font-bold text-2xl text-white">
-                  {match.home_score} - {match.away_score}
-                </div>
-                <div className="text-xs text-gray-400">
-                  HT: {match.ht_home_score} - {match.ht_away_score}
-                </div>
-              </div>
-              
-              <div className="flex-1">
-                <div className="font-medium text-white">{getHungarianTeamName(match.away_team)}</div>
-                <div className="text-xs text-gray-400">Vendég</div>
-              </div>
-            </div>
-          </div>
+          <RecentMatchItem key={index} match={match} />
         ))}
       </CardContent>
     </Card>
