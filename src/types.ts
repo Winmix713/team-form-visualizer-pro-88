@@ -1,46 +1,53 @@
 
-export interface LeagueData {
+// If there's an existing types.ts file, this will add the missing types.
+// If the file exists, you may need to just add new types.
+
+export interface Team {
   id: string;
   name: string;
-  season: string;
-  winner: string;
-  secondPlace: string;
-  thirdPlace: string;
-  status: "In Progress" | "Completed";
+  category: string;
+  founded: string;
+  stadium: string;
+  coach?: string;
 }
 
 export interface Match {
+  id: string;
   date: string;
-  home_team: string;
-  away_team: string;
-  ht_home_score: number;
-  ht_away_score: number;
-  home_score: number;
-  away_score: number;
-  round?: string;
+  homeTeamId: string;
+  awayTeamId: string;
+  homeScore: number;
+  awayScore: number;
+  venue?: string;
+  leagueId: string;
 }
 
-export interface TeamForm {
-  position: number;
-  team: string;
-  played: number;
-  goalsFor: number;
-  goalsAgainst: number;
-  points: number;
-  form: Array<"W" | "D" | "L"> | string;
+export interface Player {
+  id: string;
+  name: string;
+  teamId: string;
+  position: string;
+  goals: number;
+  assists?: number;
+  appearances?: number;
 }
 
-export interface StandingsEntry {
-  position: number;
-  team: string;
-  played: number;
-  won: number;
-  drawn: number;
-  lost: number;
-  goalsFor: number;
-  goalsAgainst: number;
-  goalDifference: number;
-  points: number;
-  form: Array<"W" | "D" | "L">;
-  previousPosition?: number;
+export interface League {
+  id: string;
+  name: string;
+  season: string;
+  startDate: string;
+  endDate: string;
+  winPoints: number;
+  drawPoints: number;
+  lossPoints: number;
+}
+
+export interface LeagueData {
+  id: string;
+  season: string;
+  winner?: string;
+  secondPlace?: string;
+  thirdPlace?: string;
+  status: string;
 }
