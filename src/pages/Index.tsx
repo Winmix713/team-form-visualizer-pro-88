@@ -39,14 +39,14 @@ const Index = () => {
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
                   <div className="text-sm text-gray-400">Szerzett gólok</div>
                   <div className="text-2xl font-bold text-white">
-                    {matches.reduce((sum, match) => sum + match.home_score + match.away_score, 0)}
+                    {matches.reduce((sum, match) => sum + match.homeScore + match.awayScore, 0)}
                   </div>
                 </div>
                 <div className="bg-black/30 rounded-lg p-4 border border-white/5">
                   <div className="text-sm text-gray-400">Átlag gól/meccs</div>
                   <div className="text-2xl font-bold text-white">
                     {matches.length > 0 
-                      ? (matches.reduce((sum, match) => sum + match.home_score + match.away_score, 0) / matches.length).toFixed(2) 
+                      ? (matches.reduce((sum, match) => sum + match.homeScore + match.awayScore, 0) / matches.length).toFixed(2) 
                       : '0.00'}
                   </div>
                 </div>

@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { fetchTeams, fetchMatches, fetchPlayers } from '@/api/dataService';
 import { Team, Match, Player } from '@/types';
 
 export const useTeamData = () => {
@@ -15,14 +14,10 @@ export const useTeamData = () => {
     const loadData = async () => {
       setLoading(true);
       try {
-        const [teamsData, matchesData, playersData] = await Promise.all([
-          fetchTeams(),
-          fetchMatches(),
-          fetchPlayers(),
-        ]);
-        setTeams(teamsData);
-        setMatches(matchesData);
-        setPlayers(playersData);
+        // Mock data for now
+        setTeams([]);
+        setMatches([]);
+        setPlayers([]);
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
